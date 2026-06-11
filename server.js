@@ -663,6 +663,27 @@ app.use(
 );
 
 const distDir = path.join(__dirname, "dist");
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "CAMEX backend is running",
+    status: pythonStatus,
+    cameraId: pythonCamId,
+    hasPendingConfig: !!pendingTrackerConfig,
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "cctv-backend",
+    status: pythonStatus,
+    uptime: process.uptime(),
+    timestamp: Date.now(),
+  });
+});
+
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir));
   app.get("*", (req, res) => res.sendFile(path.join(distDir, "index.html")));
